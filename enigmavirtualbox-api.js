@@ -39,7 +39,7 @@ var util          = require("util");
 
 /*  extra requirements  */
 var promise       = require("promise");
-var _             = require("lodash");
+var iconv         = require("iconv-lite");
 
 /*  determine base directory  */
 var basedir       = path.resolve(path.join(__dirname, "enigmavb"));
@@ -53,12 +53,14 @@ var executeProg = function (prog, args) {
             child_process.execFile(prog, args, { cwd: process.cwd() },
                 function (error, stdout, stderr) {
                     var m;
-                    if (error === null && (m = stderr.match(/prince:\s+error:\s+([^\n]+)/)))
-                        reject({ error: m[1], stdout: stdout, stderr: stderr });
+                    if (error === null && !stdout.match(/(?:.|[\r\n])*\[\d{2}:\d{2}:\d{2}\]/))
+                        reject({ error: "unknown error (no processing information found in output)", stdout: stdout, stderr: stderr });
                     else if (error !== null)
                         reject({ error: error, stdout: stdout, stderr: stderr });
-                    else
+                    else {
+                        stdout = stdout.replace(/^(?:.|[\r\n])*?((?:\[\d{2}:\d{2}:\d{2}\].*?\r?\n)*).*$/, "$1").replace(/(?:\r?\n)*$/, "")
                         resolve({ stdout: stdout, stderr: stderr });
+                    }
                 }
             );
         }
@@ -77,7 +79,15 @@ module.exports = {
         return executeProg(path.join(basedir, "enigmavbconsole.exe"), args);
     },
     gen: function (args) {
-        console.log("TODO");
+        return new promise(function (resolve, reject) {
+            if (args.length < 3)
+                reject({ error: "invalid number of arguments", stdout: "", stderr: "" });
+            var output = args.shift();
+            var xml = require("./enigmavirtualbox-gen.js")(args);
+            xml = iconv.encode(xml, "utf16");
+            fs.writeFileSync(output, xml, { encoding: "ucs2" });
+            resolve({ stdout: "", stderr: "" });
+        });
     }
 };
 

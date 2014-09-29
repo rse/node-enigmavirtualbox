@@ -33,12 +33,11 @@
     },
     "dependencies" : {
         "promise":              "~6.0.0",
-        "lodash":               "~2.4.1",
         "progress":             "~1.1.8",
         "request":              "~2.44.0",
-        "which":                "~1.0.5",
         "chalk":                "~0.5.1",
-        "rimraf":               "~2.2.8"
+        "rimraf":               "~2.2.8",
+        "iconv-lite":           "~0.4.4"
     },
     "engines": {
         "node":                 ">=0.10.0"

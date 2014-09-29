@@ -60,9 +60,21 @@ else {
     process.exit(1);
 }
 promise.then(function (result) {
+    var stdout = result.stdout.replace(/\r?\n$/, "");
+    if (stdout !== "")
+        console.log(stdout);
+    var stderr = result.stderr.replace(/\r?\n$/, "");
+    if (stderr !== "")
+        console.log(stderr);
     process.exit(0);
-}, function (error) {
-    console.log("ERROR: failed to execute command \"" + cmd + "\" " + error);
+}, function (result) {
+    console.log("ERROR: failed to execute command \"" + cmd + "\": " + result.error);
+    var stdout = result.stdout.replace(/\r?\n$/, "");
+    if (stdout !== "")
+        console.log(stdout);
+    var stderr = result.stderr.replace(/\r?\n$/, "");
+    if (stderr !== "")
+        console.log(stderr);
     process.exit(1);
 });
 
