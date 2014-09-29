@@ -118,11 +118,11 @@ if (process.argv[2] === "install") {
     /*  installation procedure  */
     console.log("++ downloading Enigma Virtual Box distribution");
     var url = downloadURL();
-    // downloadData(url).then(function (data) {
+    downloadData(url).then(function (data) {
         console.log("++ locally unpacking Enigma Virtual Box distribution");
         destdir = path.join(__dirname, "enigmavb");
         var destfile = path.join(__dirname, "enigmavb.exe");
-        // fs.writeFileSync(destfile, data, { encoding: null });
+        fs.writeFileSync(destfile, data, { encoding: null });
         var args = [
             "/SILENT",
             "/VERYSILENT",
@@ -136,13 +136,13 @@ if (process.argv[2] === "install") {
             if (error)
                 console.log(chalk.red("** ERROR: failed to extract: " + error));
             else {
-                // fs.unlinkSync(destfile);
+                fs.unlinkSync(destfile);
                 console.log("-- OK: local Enigma Virtual Box installation now available");
             }
         });
-    // }, function (error) {
-        // console.log(chalk.red("** ERROR: failed to download: " + error));
-    // });
+    }, function (error) {
+        console.log(chalk.red("** ERROR: failed to download: " + error));
+    });
 }
 else if (process.argv[2] === "uninstall") {
     /*  uninstallation procedure  */
