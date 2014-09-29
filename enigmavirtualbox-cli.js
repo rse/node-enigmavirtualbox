@@ -22,10 +22,9 @@
 **  SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-/* global __dirname: false */
 /* global process: false */
-/* global module: false */
 /* global require: false */
+/* global console: false */
 
 /*
  *  enigmavirtualbox-cli.js: Node run-time CLI
@@ -33,7 +32,7 @@
 
 var evb = require("./enigmavirtualbox-api.js");
 
-var argv = process.argv.splice(2)
+var argv = process.argv.splice(2);
 
 if (argv.length === 0) {
     console.log(
@@ -44,7 +43,7 @@ if (argv.length === 0) {
         "USAGE: enigmavirtualbox cli config.evb template.evb output.dat\n" +
         "USAGE: enigmavirtualbox cli config.evb"
     );
-    process.exit(1)
+    process.exit(1);
 }
 
 var promise;

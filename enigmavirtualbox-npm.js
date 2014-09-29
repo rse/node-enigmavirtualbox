@@ -36,7 +36,6 @@
 var child_process = require("child_process");
 var fs            = require("fs");
 var path          = require("path");
-var zlib          = require("zlib");
 
 /*  extra requirements  */
 var progress      = require("progress");
@@ -90,17 +89,6 @@ var downloadData = function (url) {
             if (progress_bar !== null)
                 progress_bar.tick(data.length);
         });
-    });
-};
-
-/*  extract a tarball (*.tar.gz)  */
-var extractTarball = function (tarball, destdir, stripdirs) {
-    return new promise(function (resolve, reject) {
-        fs.createReadStream(tarball)
-            .pipe(zlib.createGunzip())
-            .pipe(tar.Extract({ path: destdir, strip: stripdirs }))
-            .on("error", function (error) { reject(error); })
-            .on("end", function () { resolve(); });
     });
 };
 

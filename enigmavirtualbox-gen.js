@@ -22,7 +22,6 @@
 **  SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-/* global __dirname: false */
 /* global process: false */
 /* global module: false */
 /* global require: false */
@@ -134,5 +133,5 @@ module.exports = function (args) {
         "        <AllowRunningOfVirtualExeFiles>true</AllowRunningOfVirtualExeFiles>\n" +
         "    </Options>\n" +
         "</>\n";
-    return xml.replace(/    /g, "\t");
+    return xml.replace(/\s{4}/g, "\t");
 };
