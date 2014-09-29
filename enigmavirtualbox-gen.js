@@ -31,99 +31,108 @@
  *  enigmavirtualbox-gen.js: Enigma Virtual Box XML configuration generation
  */
 
+var fs   = require("fs");
 var path = require("path");
+
+var pathResolve = function (filepath, hasToExist) {
+    if (hasToExist && !fs.existsSync(filepath))
+        throw new Error("path \"" + filepath + "\" not existing");
+    filepath = ".\\" + path.relative(process.cwd(), filepath);
+    return filepath;
+};
 
 /*  the exported API  */
 module.exports = function (args) {
-    var exe_out = args.shift();
-    var exe_in  = args.shift();
+    var exe_out = pathResolve(args.shift(), false);
+    var exe_in  = pathResolve(args.shift(), true);
     var xml = "" +
-        "<?xml encoding=\"utf-16\"?>\r\n" +
-        "<>\r\n" +
-        "    <InputFile>" + exe_in + "</InputFile>\r\n" +
-        "    <OutputFile>" + exe_out + "</OutputFile>\r\n" +
-        "    <Files>\r\n" +
-        "        <Enabled>true</Enabled>\r\n" +
-        "        <DeleteExtractedOnExit>false</DeleteExtractedOnExit>\r\n" +
-        "        <CompressFiles>false</CompressFiles>\r\n" +
-        "        <Files>\r\n" +
-        "            <File>\r\n" +
-        "                <Type>3</Type>\r\n" +
-        "                <Name>%DEFAULT FOLDER%</Name>\r\n" +
-        "                <Files>\r\n";
+        "<?xml encoding=\"utf-16\"?>\n" +
+        "<>\n" +
+        "    <InputFile>" + exe_in + "</InputFile>\n" +
+        "    <OutputFile>" + exe_out + "</OutputFile>\n" +
+        "    <Files>\n" +
+        "        <Enabled>true</Enabled>\n" +
+        "        <DeleteExtractedOnExit>false</DeleteExtractedOnExit>\n" +
+        "        <CompressFiles>false</CompressFiles>\n" +
+        "        <Files>\n" +
+        "            <File>\n" +
+        "                <Type>3</Type>\n" +
+        "                <Name>%DEFAULT FOLDER%</Name>\n" +
+        "                <Files>\n";
     for (var i = 0; i < args.length; i++) {
-        var name = path.basename(args[i]);
+        var file = pathResolve(args[i], true);
+        var name = path.basename(file);
         xml += "" +
-        "                    <File>\r\n" +
-        "                        <Type>2</Type>\r\n" +
-        "                        <Name>" + name + "</Name>\r\n" +
-        "                        <File>" + args[i] + "</File>\r\n" +
-        "                        <ActiveX>false</ActiveX>\r\n" +
-        "                        <ActiveXInstall>false</ActiveXInstall>\r\n" +
-        "                        <Action>0</Action>\r\n" +
-        "                        <OverwriteDateTime>false</OverwriteDateTime>\r\n" +
-        "                        <OverwriteAttributes>false</OverwriteAttributes>\r\n" +
-        "                        <PassCommandLine>false</PassCommandLine>\r\n" +
-        "                    </File>\r\n";
+        "                    <File>\n" +
+        "                        <Type>2</Type>\n" +
+        "                        <Name>" + name + "</Name>\n" +
+        "                        <File>" + file + "</File>\n" +
+        "                        <ActiveX>false</ActiveX>\n" +
+        "                        <ActiveXInstall>false</ActiveXInstall>\n" +
+        "                        <Action>0</Action>\n" +
+        "                        <OverwriteDateTime>false</OverwriteDateTime>\n" +
+        "                        <OverwriteAttributes>false</OverwriteAttributes>\n" +
+        "                        <PassCommandLine>false</PassCommandLine>\n" +
+        "                    </File>\n";
     }
     xml +=
-        "                </Files>\r\n" +
-        "            </File>\r\n" +
-        "        </Files>\r\n" +
-        "    </Files>\r\n" +
-        "    <Registries>\r\n" +
-        "        <Enabled>false</Enabled>\r\n" +
-        "        <Registries>\r\n" +
-        "            <Registry>\r\n" +
-        "                <Type>1</Type>\r\n" +
-        "                <Virtual>true</Virtual>\r\n" +
-        "                <Name>Classes</Name>\r\n" +
-        "                <ValueType>0</ValueType>\r\n" +
-        "                <Value/>\r\n" +
-        "                <Registries/>\r\n" +
-        "            </Registry>\r\n" +
-        "            <Registry>\r\n" +
-        "                <Type>1</Type>\r\n" +
-        "                <Virtual>true</Virtual>\r\n" +
-        "                <Name>User</Name>\r\n" +
-        "                <ValueType>0</ValueType>\r\n" +
-        "                <Value/>\r\n" +
-        "                <Registries/>\r\n" +
-        "            </Registry>\r\n" +
-        "            <Registry>\r\n" +
-        "                <Type>1</Type>\r\n" +
-        "                <Virtual>true</Virtual>\r\n" +
-        "                <Name>Machine</Name>\r\n" +
-        "                <ValueType>0</ValueType>\r\n" +
-        "                <Value/>\r\n" +
-        "                <Registries/>\r\n" +
-        "            </Registry>\r\n" +
-        "            <Registry>\r\n" +
-        "                <Type>1</Type>\r\n" +
-        "                <Virtual>true</Virtual>\r\n" +
-        "                <Name>Users</Name>\r\n" +
-        "                <ValueType>0</ValueType>\r\n" +
-        "                <Value/>\r\n" +
-        "                <Registries/>\r\n" +
-        "            </Registry>\r\n" +
-        "            <Registry>\r\n" +
-        "                <Type>1</Type>\r\n" +
-        "                <Virtual>true</Virtual>\r\n" +
-        "                <Name>Config</Name>\r\n" +
-        "                <ValueType>0</ValueType>\r\n" +
-        "                <Value/>\r\n" +
-        "                <Registries/>\r\n" +
-        "            </Registry>\r\n" +
-        "        </Registries>\r\n" +
-        "    </Registries>\r\n" +
-        "    <Packaging>\r\n" +
-        "        <Enabled>false</Enabled>\r\n" +
-        "    </Packaging>\r\n" +
-        "    <Options>\r\n" +
-        "        <ShareVirtualSystem>false</ShareVirtualSystem>\r\n" +
-        "        <MapExecutableWithTemporaryFile>true</MapExecutableWithTemporaryFile>\r\n" +
-        "        <AllowRunningOfVirtualExeFiles>true</AllowRunningOfVirtualExeFiles>\r\n" +
-        "    </Options>\r\n" +
-        "</>\r\n";
-    return xml;
+        "                </Files>\n" +
+        "            </File>\n" +
+        "        </Files>\n" +
+        "    </Files>\n" +
+        "    <Registries>\n" +
+        "        <Enabled>false</Enabled>\n" +
+        "        <Registries>\n" +
+        "            <Registry>\n" +
+        "                <Type>1</Type>\n" +
+        "                <Virtual>true</Virtual>\n" +
+        "                <Name>Classes</Name>\n" +
+        "                <ValueType>0</ValueType>\n" +
+        "                <Value/>\n" +
+        "                <Registries/>\n" +
+        "            </Registry>\n" +
+        "            <Registry>\n" +
+        "                <Type>1</Type>\n" +
+        "                <Virtual>true</Virtual>\n" +
+        "                <Name>User</Name>\n" +
+        "                <ValueType>0</ValueType>\n" +
+        "                <Value/>\n" +
+        "                <Registries/>\n" +
+        "            </Registry>\n" +
+        "            <Registry>\n" +
+        "                <Type>1</Type>\n" +
+        "                <Virtual>true</Virtual>\n" +
+        "                <Name>Machine</Name>\n" +
+        "                <ValueType>0</ValueType>\n" +
+        "                <Value/>\n" +
+        "                <Registries/>\n" +
+        "            </Registry>\n" +
+        "            <Registry>\n" +
+        "                <Type>1</Type>\n" +
+        "                <Virtual>true</Virtual>\n" +
+        "                <Name>Users</Name>\n" +
+        "                <ValueType>0</ValueType>\n" +
+        "                <Value/>\n" +
+        "                <Registries/>\n" +
+        "            </Registry>\n" +
+        "            <Registry>\n" +
+        "                <Type>1</Type>\n" +
+        "                <Virtual>true</Virtual>\n" +
+        "                <Name>Config</Name>\n" +
+        "                <ValueType>0</ValueType>\n" +
+        "                <Value/>\n" +
+        "                <Registries/>\n" +
+        "            </Registry>\n" +
+        "        </Registries>\n" +
+        "    </Registries>\n" +
+        "    <Packaging>\n" +
+        "        <Enabled>false</Enabled>\n" +
+        "    </Packaging>\n" +
+        "    <Options>\n" +
+        "        <ShareVirtualSystem>false</ShareVirtualSystem>\n" +
+        "        <MapExecutableWithTemporaryFile>true</MapExecutableWithTemporaryFile>\n" +
+        "        <AllowRunningOfVirtualExeFiles>true</AllowRunningOfVirtualExeFiles>\n" +
+        "    </Options>\n" +
+        "</>\n";
+    return xml.replace(/    /g, "\t");
 };

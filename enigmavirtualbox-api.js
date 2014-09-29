@@ -80,12 +80,17 @@ module.exports = {
     },
     gen: function (args) {
         return new promise(function (resolve, reject) {
-            if (args.length < 3)
-                reject({ error: "invalid number of arguments", stdout: "", stderr: "" });
-            var output = args.shift();
-            var xml = require("./enigmavirtualbox-gen.js")(args);
-            xml = iconv.encode(xml, "utf16");
-            fs.writeFileSync(output, xml, { encoding: "ucs2" });
+            try {
+                if (args.length < 3)
+                    throw new Error("invalid number of arguments");
+                var output = args.shift();
+                var xml = require("./enigmavirtualbox-gen.js")(args);
+                xml = iconv.encode(xml, "utf16le");
+                fs.writeFileSync(output, xml, {});
+            }
+            catch (error) {
+                reject({ error: error, stdout: "", stderr: "" });
+            }
             resolve({ stdout: "", stderr: "" });
         });
     }
