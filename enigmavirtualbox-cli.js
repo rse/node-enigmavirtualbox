@@ -31,10 +31,38 @@
  *  enigmavirtualbox-cli.js: Node run-time CLI
  */
 
-/*  core requirements  */
-var child_process = require("child_process");
+var evb = require("./enigmavirtualbox-api.js");
 
-$ enigmavirtualbox
-$ enigmavirtualbox config.evb app.exe app.exe file.x ...
-$ enigmavirtualbox config.evb
+var argv = process.argv.splice(2)
+
+if (argv.length === 0) {
+    console.log(
+        "ERROR: missing command (and options)\n" +
+        "USAGE: enigmavirtualbox <command> [<arg> ...]\n" +
+        "USAGE: enigmavirtualbox gui\n" +
+        "USAGE: enigmavirtualbox gen config.evb app.exe app.exe file.x ...\n" +
+        "USAGE: enigmavirtualbox cli config.evb template.evb output.dat\n" +
+        "USAGE: enigmavirtualbox cli config.evb"
+    );
+    process.exit(1)
+}
+
+var promise;
+var cmd = argv.shift();
+if (cmd === "gui")
+    promise = evb.gui();
+else if (cmd === "cli")
+    promise = evb.cli(argv);
+else if (cmd === "gen")
+    promise = evb.gen(argv);
+else {
+    console.log("ERROR: invalid command");
+    process.exit(1);
+}
+promise.then(function (result) {
+    process.exit(0);
+}, function (error) {
+    console.log("ERROR: failed to execute command \"" + cmd + "\" " + error);
+    process.exit(1);
+});
 
