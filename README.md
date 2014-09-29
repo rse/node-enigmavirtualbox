@@ -37,35 +37,40 @@ Usage
 -----
 
 ```js
-var EVB = require("enigmavirtualbox");
-
-EVB()
-    .config("test.evb")
-    .execute()
-    .then(function () {
-        console.log("OK: done");
-    }, function (error) {
-        console.log("ERROR: ", util.inspect(error));
-    })
+var evb = require("enigmavirtualbox");
+evb.gui(<args>).then(...);
+evb.cli(<args>).then(...);
+evb.gen(<args>).then(...);
 ```
 
-API
----
+```sh
+$ enigmavirtualbox gui <args>
+$ enigmavirtualbox cli <args>
+$ enigmavirtualbox gen <args>
+```
 
-- `EVB([options]): EVB`: constructor for the API. Call this once
-  for every generation process.
-  This returns the EVB API for further method chaining.
+Examples
+--------
 
-- `EVB#config(filename): EVB`: set XML configuration file.
-  This returns the EVB API for further method chaining.
+```sh
+# run the generator to create a new configuration
+$ enigmavirtualbox gen config.evp app-bundled.exe app.exe app.dat
 
-- `EVB#execute(): EVB`: asynchronously execute the conversion
-  process. This returns a promise.
+# run the GUI to create a new configuration
+$ enigmavirtualbox gui
+
+# run the GUI to edit a configuration
+$ enigmavirtualbox gui config.evp
+
+# pack application according to edited/generated configuration
+$ enigmavirtualbox cli config.evp
+```
 
 See Also
 --------
 
 Companion Grunt task [grunt-enigmavirtualbox](https://github.com/rse/grunt-enigmavirtualbox)
+[forthcoming]
 
 License
 -------
