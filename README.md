@@ -13,8 +13,8 @@ Node-EnigmaVirtualBox
 Abstract
 --------
 
-This is a [Node](http://nodejs.org/) API for executing the Windows
-tool [Enigma Virtual Box](http://enigmaprotector.com/en/aboutvb.html) program from within
+This is a [Node](http://nodejs.org/) API for executing the excellent Windows
+tool [Enigma Virtual Box](http://enigmaprotector.com/en/aboutvb.html) from within
 JavaScript. The essential point of this Node extension is not primarily
 to just abstract away the asynchronous CLI execution. Instead there
 are two other major points: First, this Node extension provides a
