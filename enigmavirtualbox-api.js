@@ -70,11 +70,19 @@ var executeProg = function (prog, args) {
 
 /*  the exported API  */
 module.exports = {
+    path: function (mode) {
+        if (mode === "gui")
+            return path.join(basedir, "enigmavb.exe");
+        else if (mode === "cli")
+            return path.join(basedir, "enigmavbconsole.exe");
+        else
+            throw new Error("unknown mode");
+    },
     gui: function (args) {
-        return executeProg(path.join(basedir, "enigmavb.exe"), args);
+        return executeProg(this.path("gui"), args);
     },
     cli: function (args) {
-        return executeProg(path.join(basedir, "enigmavbconsole.exe"), args);
+        return executeProg(this.path("cli"), args);
     },
     gen: function (args) {
         return new promise(function (resolve, reject) {
