@@ -49,7 +49,7 @@ if (argv.length === 0) {
 var promise;
 var cmd = argv.shift();
 if (cmd === "gui")
-    promise = evb.gui();
+    promise = evb.gui(argv);
 else if (cmd === "cli")
     promise = evb.cli(argv);
 else if (cmd === "gen")
