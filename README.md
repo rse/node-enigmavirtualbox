@@ -57,10 +57,7 @@ Examples
 $ enigmavirtualbox gen config.evp app-bundled.exe app.exe app.dat
 
 # run the GUI to create a new configuration
-$ enigmavirtualbox gui
-
-# run the GUI to edit a configuration
-$ enigmavirtualbox gui config.evp
+$ enigmavirtualbox gui [config.evp]
 
 # pack application according to edited/generated configuration
 $ enigmavirtualbox cli config.evp
