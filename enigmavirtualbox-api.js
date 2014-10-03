@@ -79,10 +79,14 @@ module.exports = {
             throw new Error("unknown mode");
     },
     gui: function () {
+        if (process.platform !== "win32")
+            throw new Error("ERROR: Enigma Virtual Box GUI can be run under Windows platform only!");
         var args = Array.prototype.slice.call(arguments, 0);
         return executeProg(this.path("gui"), args);
     },
     cli: function () {
+        if (process.platform !== "win32")
+            throw new Error("ERROR: Enigma Virtual Box CLI can be run under Windows platform only!");
         var args = Array.prototype.slice.call(arguments, 0);
         return executeProg(this.path("cli"), args);
     },
