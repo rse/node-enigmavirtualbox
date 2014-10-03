@@ -107,7 +107,7 @@ if (process.argv[2] === "install") {
     console.log("++ downloading Enigma Virtual Box distribution");
     var url = downloadURL();
     downloadData(url).then(function (data) {
-        console.log("++ locally unpacking Enigma Virtual Box distribution");
+        console.log("++ locally unpacking Enigma Virtual Box distribution (please be patient)");
         destdir = path.join(__dirname, "enigmavb");
         var destfile = path.join(__dirname, "enigmavb.exe");
         fs.writeFileSync(destfile, data, { encoding: null });
