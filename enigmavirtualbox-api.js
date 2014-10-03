@@ -44,14 +44,14 @@ var iconv         = require("iconv-lite");
 var basedir       = path.resolve(path.join(__dirname, "enigmavb"));
 
 /*  execute a program  */
-var executeProg = function (prog, args) {
+var executeProg = function (prog, args, ignoreOutput) {
     return new promise(function (resolve, reject) {
         try {
             var options = {};
             options.cwd = process.cwd();
             child_process.execFile(prog, args, { cwd: process.cwd() },
                 function (error, stdout, stderr) {
-                    if (error === null && !stdout.match(/(?:.|[\r\n])*\[\d{2}:\d{2}:\d{2}\]/))
+                    if (error === null && !ignoreOutput && !stdout.match(/(?:.|[\r\n])*\[\d{2}:\d{2}:\d{2}\]/))
                         reject({ error: "unknown error (no processing information found in output)", stdout: stdout, stderr: stderr });
                     else if (error !== null)
                         reject({ error: error, stdout: stdout, stderr: stderr });
@@ -82,13 +82,13 @@ module.exports = {
         if (process.platform !== "win32")
             throw new Error("ERROR: Enigma Virtual Box GUI can be run under Windows platform only!");
         var args = Array.prototype.slice.call(arguments, 0);
-        return executeProg(this.path("gui"), args);
+        return executeProg(this.path("gui"), args, true);
     },
     cli: function () {
         if (process.platform !== "win32")
             throw new Error("ERROR: Enigma Virtual Box CLI can be run under Windows platform only!");
         var args = Array.prototype.slice.call(arguments, 0);
-        return executeProg(this.path("cli"), args);
+        return executeProg(this.path("cli"), args, false);
     },
     gen: function () {
         var args = Array.prototype.slice.call(arguments, 0);
