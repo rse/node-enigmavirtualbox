@@ -60,13 +60,13 @@ evb.cli("app.evp").then(...);
 ```
 
 ```sh
-# run the generator to create a new configuration
+# run the generator to create a new standard configuration
 $ enigmavirtualbox gen app.evp app-bundled.exe app.exe app.dat
 
-# run the GUI to create a new configuration
+# run the GUI to create/modify a new/existing configuration
 $ enigmavirtualbox gui [app.evp]
 
-# pack application according to edited/generated configuration
+# runt the CLI to pack application according to configuration
 $ enigmavirtualbox cli app.evp
 ```
 

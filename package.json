@@ -1,7 +1,7 @@
 {
     "name":        "enigmavirtualbox",
     "homepage":    "http://github.com/rse/node-enigmavirtualbox",
-    "description": "Node API for executing Enigma Virtual Box",
+    "description": "Node API and CLI for executing Windows tool Enigma Virtual Box to bundle executable with data files",
     "version":     "0.9.0",
     "license":     "MIT",
     "author": {
@@ -10,7 +10,11 @@
         "url":     "http://engelschall.com"
     },
     "keywords": [
-        "Enigma", "Virtual Box", "EXE"
+        "Enigma",
+        "Virtual Box",
+        "EXE",
+        "packing",
+        "bundling"
     ],
     "repository": {
         "type": "git",
