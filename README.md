@@ -27,6 +27,14 @@ no need for any previously available system-wide Enigma Virtual Box
 installation. Just depend on this Node extension and Enigma Virtual Box
 is available!
 
+Notice
+------
+
+Enigma Virtual Box is a tool available for Windows only! Hence, running
+the Enigma Virtual Box CLI and GUI requires this Node module to be
+used under a Windows run-time platform, of course. Only the built-in
+configuration file generator can be used on any platform.
+
 Installation
 ------------
 
@@ -41,14 +49,14 @@ Usage
 ```js
 var evb = require("enigmavirtualbox");
 evb.gen(<arg>[, <arg>, ...]).then(...);
-evb.gui(<arg>[, <arg>, ...]).then(...);
-evb.cli(<arg>[, <arg>, ...]).then(...);
+evb.gui(<arg>[, <arg>, ...]).then(...);   // requires Windows run-time platform
+evb.cli(<arg>[, <arg>, ...]).then(...);   // requires Windows run-time platform
 ```
 
 ```sh
 $ enigmavirtualbox gen <arg> [<arg> ...]
-$ enigmavirtualbox gui <arg> [<arg> ...]
-$ enigmavirtualbox cli <arg> [<arg> ...]
+$ enigmavirtualbox gui <arg> [<arg> ...]  # requires Windows run-time platform
+$ enigmavirtualbox cli <arg> [<arg> ...]  # requires Windows run-time platform
 ```
 
 Examples
