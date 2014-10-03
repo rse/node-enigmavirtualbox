@@ -51,8 +51,8 @@ module.exports = function (args) {
         "    <OutputFile>" + exe_out + "</OutputFile>\n" +
         "    <Files>\n" +
         "        <Enabled>true</Enabled>\n" +
-        "        <DeleteExtractedOnExit>false</DeleteExtractedOnExit>\n" +
-        "        <CompressFiles>false</CompressFiles>\n" +
+        "        <DeleteExtractedOnExit>true</DeleteExtractedOnExit>\n" +
+        "        <CompressFiles>true</CompressFiles>\n" +
         "        <Files>\n" +
         "            <File>\n" +
         "                <Type>3</Type>\n" +
@@ -128,8 +128,8 @@ module.exports = function (args) {
         "        <Enabled>false</Enabled>\n" +
         "    </Packaging>\n" +
         "    <Options>\n" +
-        "        <ShareVirtualSystem>false</ShareVirtualSystem>\n" +
-        "        <MapExecutableWithTemporaryFile>true</MapExecutableWithTemporaryFile>\n" +
+        "        <ShareVirtualSystem>true</ShareVirtualSystem>\n" +
+        "        <MapExecutableWithTemporaryFile>false</MapExecutableWithTemporaryFile>\n" +
         "        <AllowRunningOfVirtualExeFiles>true</AllowRunningOfVirtualExeFiles>\n" +
         "    </Options>\n" +
         "</>\n";
