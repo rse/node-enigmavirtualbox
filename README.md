@@ -38,36 +38,37 @@ Usage
 
 ```js
 var evb = require("enigmavirtualbox");
-evb.gui(<args>).then(...);
-evb.cli(<args>).then(...);
-evb.gen(<args>).then(...);
+evb.gen(<arg>[, <arg>, ...]).then(...);
+evb.gui(<arg>[, <arg>, ...]).then(...);
+evb.cli(<arg>[, <arg>, ...]).then(...);
 ```
 
 ```sh
-$ enigmavirtualbox gui <args>
-$ enigmavirtualbox cli <args>
-$ enigmavirtualbox gen <args>
+$ enigmavirtualbox gen <arg> [<arg> ...]
+$ enigmavirtualbox gui <arg> [<arg> ...]
+$ enigmavirtualbox cli <arg> [<arg> ...]
 ```
 
 Examples
 --------
 
-```sh
-# run the generator to create a new configuration
-$ enigmavirtualbox gen config.evp app-bundled.exe app.exe app.dat
-
-# run the GUI to create a new configuration
-$ enigmavirtualbox gui [config.evp]
-
-# pack application according to edited/generated configuration
-$ enigmavirtualbox cli config.evp
+```js
+var evb = require("enigmavirtualbox");
+evb.gen("app.evp", "app-bundled.exe", "app.exe", "app.dat").then(...);
+evb.gui("app.evp").then(...);
+evb.cli("app.evp").then(...);
 ```
 
-See Also
---------
+```sh
+# run the generator to create a new configuration
+$ enigmavirtualbox gen app.evp app-bundled.exe app.exe app.dat
 
-Companion Grunt task [grunt-enigmavirtualbox](https://github.com/rse/grunt-enigmavirtualbox)
-[forthcoming]
+# run the GUI to create a new configuration
+$ enigmavirtualbox gui [app.evp]
+
+# pack application according to edited/generated configuration
+$ enigmavirtualbox cli app.evp
+```
 
 License
 -------

@@ -50,11 +50,11 @@ if (argv.length === 0) {
 var promise;
 var cmd = argv.shift();
 if (cmd === "gui")
-    promise = evb.gui(argv);
+    promise = evb.gui.apply(evb, argv);
 else if (cmd === "cli")
-    promise = evb.cli(argv);
+    promise = evb.cli.apply(evb, argv);
 else if (cmd === "gen")
-    promise = evb.gen(argv);
+    promise = evb.gen.apply(evb, argv);
 else {
     console.log("ERROR: invalid command");
     process.exit(1);

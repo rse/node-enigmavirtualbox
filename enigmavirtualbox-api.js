@@ -78,13 +78,16 @@ module.exports = {
         else
             throw new Error("unknown mode");
     },
-    gui: function (args) {
+    gui: function () {
+        var args = Array.prototype.slice.call(arguments, 0);
         return executeProg(this.path("gui"), args);
     },
-    cli: function (args) {
+    cli: function () {
+        var args = Array.prototype.slice.call(arguments, 0);
         return executeProg(this.path("cli"), args);
     },
-    gen: function (args) {
+    gen: function () {
+        var args = Array.prototype.slice.call(arguments, 0);
         return new promise(function (resolve, reject) {
             try {
                 if (args.length < 3)
