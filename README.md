@@ -13,17 +13,18 @@ Node-EnigmaVirtualBox
 Abstract
 --------
 
-This is a [Node](http://nodejs.org/) API for executing the excellent Windows
+This is a [Node](http://nodejs.org/) API and CLI for executing the excellent Windows
 tool [Enigma Virtual Box](http://enigmaprotector.com/en/aboutvb.html) from within
 JavaScript. The essential point of this Node extension is not primarily
-to just abstract away the asynchronous CLI execution. Instead there
-are two other major points: First, this Node extension provides a
-fixed dependency, as other Node extensions which require Enigma Virtual Box
-under Windows can just depend (via their NPM `package.json` file) onto this extension.
-Second, as this Node extension can automatically download, locally install
-and use an Enigma Virtual Box distribution, there is no need for any previously
-available global Enigma Virtual Box installation. Just depend on this Node extension and
-Enigma Virtual Box is available!
+to just abstract away the asynchronous CLI execution. Instead there are
+two other major points: First, this Node extension provides a fixed
+dependency, as other Node extensions which require Enigma Virtual Box
+under Windows can just depend (via their NPM `package.json` file) onto
+this extension. Second, as this Node extension automatically downloads,
+locally installs and uses an Enigma Virtual Box distribution, there is
+no need for any previously available system-wide Enigma Virtual Box
+installation. Just depend on this Node extension and Enigma Virtual Box
+is available!
 
 Installation
 ------------
