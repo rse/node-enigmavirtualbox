@@ -93,11 +93,58 @@ module.exports = {
     gen: function () {
         var args = Array.prototype.slice.call(arguments, 0);
         return new promise(function (resolve, reject) {
+
+            // Default settings for optional flags (compatible with previous releases of node-enigmavirtualbox):
+            var enableSubfolders = false; // if set to true, folder structure is inserted into enigma project
+            var compressFiles = true;
+            var deleteExtractedOnExit = true;
+            var shareVirtualSystem = true; // Setting for <options> section.
+            var mapExecutableWithTemporaryFile = false; // Setting for <options> section.
+            var allowRunningOfVirtualExeFiles = true; // Setting for <options> section.
+
             try {
+                // process options:
+                do {
+                    var arg = args.shift();
+                    switch (arg.toLowerCase()) {
+                        case '--enablesubfolders':
+                        case '--enablesubfolders=1':
+                        case '--enablesubfolders=true':
+                            enableSubfolders = true;
+                            break;
+                        case '--sharevirtualsystem=0':
+                        case '--sharevirtualsystem=false':
+                            shareVirtualSystem = false;
+                            break;
+                        case '--mapexecutablewithtemporaryfile':
+                        case '--mapexecutablewithtemporaryfile=1':
+                        case '--mapexecutablewithtemporaryfile=true':
+                            mapExecutableWithTemporaryFile = true;
+                            break;
+                        case '--allowrunningofvirtualexefiles=0':
+                        case '--allowrunningofvirtualexefiles=false':
+                            allowRunningOfVirtualExeFiles = false;
+                            break;
+                        case '--compressfiles=0':
+                        case '--compressfiles=false':
+                            compressFiles = false;
+                            break;
+                        case '--deleteextractedonexit=0':
+                        case '--deleteextractedonexit=false':
+                            deleteExtractedOnExit = false;
+                            break;
+                    }
+                } while (arg.substring(0, 2) == '--');
+                if (arg != undefined)
+                    args.unshift(arg);
+
                 if (args.length < 3)
                     throw new Error("invalid number of arguments");
                 var output = args.shift();
-                var xml = require("./enigmavirtualbox-gen.js")(args);
+                var xml = require("./enigmavirtualbox-gen.js")(
+                    args, enableSubfolders, compressFiles, deleteExtractedOnExit, shareVirtualSystem,
+                    mapExecutableWithTemporaryFile, allowRunningOfVirtualExeFiles
+                );
                 xml = iconv.encode(xml, "utf16le");
                 fs.writeFileSync(output, xml, {});
             }
