@@ -71,27 +71,27 @@ creation of the executable, e.g. for a build process.
 All options have backwards compatibility to previous releases of Node-EnigmaVirtualBox
 that did not have these options yet.
 
-**--enableSubfolder=(true|false)**
+**--enableSubfolder=(true|false)**  
 Defaults to *false*. If set to true, the folder structure of the files is kept.
 If set to false or omitted, all files will end up in the virtual root directory.
 
-**--shareVirtualSystem=(true|false)**
+**--shareVirtualSystem=(true|false)**  
 Defaults to *true*. Maps to the Enigma Virtual Box GUI option "Share virtual system
 to child processes".
 
-**--mapExecutableWithTemporaryFile=(true|false)**
+**--mapExecutableWithTemporaryFile=(true|false)**  
 Defaults to *false*. Maps to the Enigma Virtual Box GUI option "Map executable files
 using temporary files".
 
-**--allowRunningOfVirtualExeFiles=(true|false)**
+**--allowRunningOfVirtualExeFiles=(true|false)**  
 Defaults to *true*. Maps to the Enigma Virtual Box GUI option "Allow running of virtual
 executable files".
 
-**--compressFiles=(true|false)**
+**--compressFiles=(true|false)**  
 Defaults to *true*. If set to false, files will not be compressed, resulting in a
 larger executable file.
 
-**--deleteExtractedOnExit=(true|false)**
+**--deleteExtractedOnExit=(true|false)**  
 Defaults to *true*. If set to false, extracted files will remain in their temporary
 directory. Mainly used for debugging purposes.
 
@@ -122,16 +122,12 @@ Examples with options
 ```js
 var evb = require("enigmavirtualbox");
 evb.gen("--compressFiles=false", "--enableSubfolders=true", "app.evp", "app-bundled.exe", "app.exe", "app.dat", "subfolder\file.dat").then(...);
-evb.gui("app.evp").then(...);
 evb.cli("app.evp").then(...);
 ```
 
 ```sh
-# run the generator to create a new standard configuration with
+# run the generator to create a new configuration with subfolders enabled and no compression
 $ enigmavirtualbox gen --compressFiles=false --enableSubfolders=true app.evp app-bundled.exe app.exe app.dat subfolder\file.dat
-
-# run the GUI to create/modify a new/existing configuration
-$ enigmavirtualbox gui [app.evp]
 
 # run the CLI to pack application according to configuration
 $ enigmavirtualbox cli app.evp
