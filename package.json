@@ -2,7 +2,7 @@
     "name":        "enigmavirtualbox",
     "homepage":    "http://github.com/rse/node-enigmavirtualbox",
     "description": "Node API and CLI for executing Windows tool Enigma Virtual Box to bundle executable with data files",
-    "version":     "0.9.3",
+    "version":     "0.9.4",
     "license":     "MIT",
     "author": {
         "name":    "Ralf S. Engelschall",
