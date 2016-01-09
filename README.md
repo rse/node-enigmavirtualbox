@@ -48,16 +48,52 @@ Usage
 
 ```js
 var evb = require("enigmavirtualbox");
-evb.gen(<arg>[, <arg>, ...]).then(...);
+evb.gen([<option>, ...], <arg>[, <arg>, ...]).then(...);
 evb.gui(<arg>[, <arg>, ...]).then(...);   // requires Windows run-time platform
 evb.cli(<arg>[, <arg>, ...]).then(...);   // requires Windows run-time platform
 ```
 
 ```sh
-$ enigmavirtualbox gen <arg> [<arg> ...]
+$ enigmavirtualbox gen [<option>, ...] <arg> [<arg> ...]
 $ enigmavirtualbox gui <arg> [<arg> ...]  # requires Windows run-time platform
 $ enigmavirtualbox cli <arg> [<arg> ...]  # requires Windows run-time platform
 ```
+
+Options
+-------
+
+There are some options available for the generation of the *.evb file.
+When used, they have to be passed as first arguments to the "gen" call.
+
+These options are useful to bypass the call of the GUI and to fully automate the
+creation of the executable, e.g. for a build process.
+
+All options have backwards compatibility to previous releases of Node-EnigmaVirtualBox
+that did not have these options yet.
+
+**--enableSubfolder=(true|false)**  
+Defaults to *false*. If set to true, the folder structure of the files is kept.
+If set to false or omitted, all files will end up in the virtual root directory.
+
+**--shareVirtualSystem=(true|false)**  
+Defaults to *true*. Maps to the Enigma Virtual Box GUI option "Share virtual system
+to child processes".
+
+**--mapExecutableWithTemporaryFile=(true|false)**  
+Defaults to *false*. Maps to the Enigma Virtual Box GUI option "Map executable files
+using temporary files".
+
+**--allowRunningOfVirtualExeFiles=(true|false)**  
+Defaults to *true*. Maps to the Enigma Virtual Box GUI option "Allow running of virtual
+executable files".
+
+**--compressFiles=(true|false)**  
+Defaults to *true*. If set to false, files will not be compressed, resulting in a
+larger executable file.
+
+**--deleteExtractedOnExit=(true|false)**  
+Defaults to *true*. If set to false, extracted files will remain in their temporary
+directory. Mainly used for debugging purposes.
 
 Examples
 --------
@@ -76,9 +112,28 @@ $ enigmavirtualbox gen app.evp app-bundled.exe app.exe app.dat
 # run the GUI to create/modify a new/existing configuration
 $ enigmavirtualbox gui [app.evp]
 
-# runt the CLI to pack application according to configuration
+# run the CLI to pack application according to configuration
 $ enigmavirtualbox cli app.evp
 ```
+
+Examples with options
+---------------------
+
+```js
+var evb = require("enigmavirtualbox");
+evb.gen("--compressFiles=false", "--enableSubfolders=true", "app.evp", "app-bundled.exe", "app.exe", "app.dat", "subfolder\file.dat").then(...);
+evb.cli("app.evp").then(...);
+```
+
+```sh
+# run the generator to create a new configuration with subfolders enabled and no compression
+$ enigmavirtualbox gen --compressFiles=false --enableSubfolders=true app.evp app-bundled.exe app.exe app.dat subfolder\file.dat
+
+# run the CLI to pack application according to configuration
+$ enigmavirtualbox cli app.evp
+```
+
+
 
 License
 -------
