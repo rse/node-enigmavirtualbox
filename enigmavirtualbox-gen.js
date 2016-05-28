@@ -36,14 +36,127 @@ var path = require("path");
 var pathResolve = function (filepath, hasToExist) {
     if (hasToExist && !fs.existsSync(filepath))
         throw new Error("path \"" + filepath + "\" not existing");
+    var isSubFolder = filepath.indexOf("\\") > 0;
+    if(isSubFolder) {
+         return filepath;
+    }
     filepath = ".\\" + path.relative(process.cwd(), filepath);
     return filepath;
 };
 
+/**
+ * Generates a tree structure of the fileList array, e.g.:
+ *
+ * tree = {
+ *    "files": ["index.html"],
+ *    "folders": {
+ *        "myFolder": {
+ *            "files": ["foo.bak", "far.baz"],
+ *            "folders": {}
+ *        },
+ *        "myOtherFolder": {
+ *            "files": [],
+ *            "folders": {
+ *                "nestedFolder": {
+ *                    "files": ["foo.bar"],
+ *                    "folders": {}
+ *                }
+ *            }
+ *        }
+ *    }
+ *};
+ *
+ * @param fileList
+ * @param keepFolders
+ */
+var fileListToTree = function (fileList, keepFolders) {
+    var addRecursively = function(obj, items, fullPath) {
+        if (items.length == 1) {
+            // file in root:
+            var file = {};
+            file["name"] = items[0];
+            file["path"] = path.resolve(fullPath); // absolute path on filesystem is needed.
+            obj.files.push(file);
+        } else {
+            var firstItem = items.shift();
+            if (firstItem == '.' || firstItem == '..') {
+                addRecursively(obj, items, fullPath);
+                return;
+            }
+            if (!obj.folders.hasOwnProperty(firstItem)) {
+                obj.folders[firstItem] = {"files":[], "folders":{}};
+            }
+            var currentLeaf = obj.folders[firstItem];
+            addRecursively(currentLeaf, items, fullPath);
+        }
+
+    };
+    var tree = {"files":[],  "folders": {}};
+    var split, fullPath, lastItem;
+    for (var i = 0; i < fileList.length; i++) {
+        split = fileList[i].split("\\");
+        fullPath = fileList[i];
+        if (keepFolders) {
+            addRecursively(tree, split, fullPath);
+        } else {
+            tree.files.push(
+                {
+                    "name": split[split.length-1],
+                    "path": fullPath
+                }
+            );
+        }
+    }
+    return tree;
+};
+
+var getXmlFolderRecursively = function(folderName, currentLeaf, indentLevel) {
+    var indent = new Array(indentLevel + 1).join(' ');
+    var snippet = "" +
+        indent + "<File>\n" +
+        indent + "    <Type>3</Type>\n" +
+        indent + "    <Name>" + folderName + "</Name>\n" +
+        indent + "    <Files>\n";
+
+    if (Object.keys(currentLeaf.folders).length) {
+        for (var folder in currentLeaf.folders) {
+            if (currentLeaf.folders.hasOwnProperty(folder)) {
+                snippet += getXmlFolderRecursively(folder, currentLeaf.folders[folder], indentLevel + 8)
+            }
+        }
+    }
+    for (var i = 0; i<currentLeaf.files.length; i++ ) {
+        snippet += "" +
+            indent + "        <File>\n" +
+            indent + "            <Type>2</Type>\n" +
+            indent + "            <Name>" + currentLeaf.files[i].name + "</Name>\n" +
+            indent + "            <File>" + currentLeaf.files[i].path + "</File>\n" +
+            indent + "            <ActiveX>false</ActiveX>\n" +
+            indent + "            <ActiveXInstall>false</ActiveXInstall>\n" +
+            indent + "            <Action>0</Action>\n" +
+            indent + "            <OverwriteDateTime>false</OverwriteDateTime>\n" +
+            indent + "            <OverwriteAttributes>false</OverwriteAttributes>\n" +
+            indent + "            <PassCommandLine>false</PassCommandLine>\n" +
+            indent + "        </File>\n";
+    }
+
+    snippet += "" +
+        indent + "    </Files>\n" +
+        indent + "</File>\n";
+
+    return snippet;
+};
+
 /*  the exported API  */
-module.exports = function (args) {
+module.exports = function (args, enableSubfolders, compressFiles, deleteExtractedOnExit, shareVirtualSystem, mapExecutableWithTemporaryFile, allowRunningOfVirtualExeFiles) {
     var exe_out = pathResolve(args.shift(), false);
     var exe_in  = pathResolve(args.shift(), true);
+    var fileList = [];
+    for (var i = 0; i < args.length; i++) {
+        var file = pathResolve(args[i], true);
+        fileList.push(file);
+    }
+    var tree = fileListToTree(fileList, enableSubfolders);
     var xml = "" +
         "<?xml encoding=\"utf-16\"?>\n" +
         "<>\n" +
@@ -51,32 +164,13 @@ module.exports = function (args) {
         "    <OutputFile>" + exe_out + "</OutputFile>\n" +
         "    <Files>\n" +
         "        <Enabled>true</Enabled>\n" +
-        "        <DeleteExtractedOnExit>true</DeleteExtractedOnExit>\n" +
-        "        <CompressFiles>true</CompressFiles>\n" +
-        "        <Files>\n" +
-        "            <File>\n" +
-        "                <Type>3</Type>\n" +
-        "                <Name>%DEFAULT FOLDER%</Name>\n" +
-        "                <Files>\n";
-    for (var i = 0; i < args.length; i++) {
-        var file = pathResolve(args[i], true);
-        var name = path.basename(file);
-        xml += "" +
-        "                    <File>\n" +
-        "                        <Type>2</Type>\n" +
-        "                        <Name>" + name + "</Name>\n" +
-        "                        <File>" + file + "</File>\n" +
-        "                        <ActiveX>false</ActiveX>\n" +
-        "                        <ActiveXInstall>false</ActiveXInstall>\n" +
-        "                        <Action>0</Action>\n" +
-        "                        <OverwriteDateTime>false</OverwriteDateTime>\n" +
-        "                        <OverwriteAttributes>false</OverwriteAttributes>\n" +
-        "                        <PassCommandLine>false</PassCommandLine>\n" +
-        "                    </File>\n";
-    }
+        "        <DeleteExtractedOnExit>" + (deleteExtractedOnExit ? "true" : "false") + "</DeleteExtractedOnExit>\n" +
+        "        <CompressFiles>" + (compressFiles ? "true" : "false") + "</CompressFiles>\n" +
+        "        <Files>\n";
+
+    xml += getXmlFolderRecursively("%DEFAULT FOLDER%", tree, 12);
+
     xml +=
-        "                </Files>\n" +
-        "            </File>\n" +
         "        </Files>\n" +
         "    </Files>\n" +
         "    <Registries>\n" +
@@ -128,9 +222,9 @@ module.exports = function (args) {
         "        <Enabled>false</Enabled>\n" +
         "    </Packaging>\n" +
         "    <Options>\n" +
-        "        <ShareVirtualSystem>true</ShareVirtualSystem>\n" +
-        "        <MapExecutableWithTemporaryFile>false</MapExecutableWithTemporaryFile>\n" +
-        "        <AllowRunningOfVirtualExeFiles>true</AllowRunningOfVirtualExeFiles>\n" +
+        "        <ShareVirtualSystem>" + (shareVirtualSystem ? "true" : "false") + "</ShareVirtualSystem>\n" +
+        "        <MapExecutableWithTemporaryFile>" + (mapExecutableWithTemporaryFile ? "true" : "false") + "</MapExecutableWithTemporaryFile>\n" +
+        "        <AllowRunningOfVirtualExeFiles>" + (allowRunningOfVirtualExeFiles ? "true" : "false") + "</AllowRunningOfVirtualExeFiles>\n" +
         "    </Options>\n" +
         "</>\n";
     return xml.replace(/\s{4}/g, "\t");
