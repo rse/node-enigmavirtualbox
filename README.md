@@ -121,7 +121,7 @@ Examples with options
 
 ```js
 var evb = require("enigmavirtualbox");
-evb.gen("--compressFiles=false", "--enableSubfolders=true", "app.evp", "app-bundled.exe", "app.exe", "app.dat", "subfolder\file.dat").then(...);
+evb.gen("--compressFiles=false", "--enableSubfolders=true", "app.evp", "app-bundled.exe", "app.exe", "app.dat", "subfolder\\file.dat").then(...);
 evb.cli("app.evp").then(...);
 ```
 

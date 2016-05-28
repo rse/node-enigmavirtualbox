@@ -36,6 +36,10 @@ var path = require("path");
 var pathResolve = function (filepath, hasToExist) {
     if (hasToExist && !fs.existsSync(filepath))
         throw new Error("path \"" + filepath + "\" not existing");
+    var isSubFolder = filepath.indexOf("\\") > 0;
+    if(isSubFolder) {
+         return filepath;
+    }
     filepath = ".\\" + path.relative(process.cwd(), filepath);
     return filepath;
 };
