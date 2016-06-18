@@ -39,10 +39,9 @@ if (argv.length === 0) {
     console.log(
         "ERROR: missing command (and options)\n" +
         "USAGE: enigmavirtualbox <command> [<arg> ...]\n" +
-        "USAGE: enigmavirtualbox gui\n" +
-        "USAGE: enigmavirtualbox gen config.evb app.exe app.exe file.x ...\n" +
-        "USAGE: enigmavirtualbox cli config.evb template.evb output.dat\n" +
-        "USAGE: enigmavirtualbox cli config.evb"
+        "USAGE: enigmavirtualbox gui [app.evb]\n" +
+        "USAGE: enigmavirtualbox gen app.evb app-bundled.exe app.exe app.dat [...]\n" +
+        "USAGE: enigmavirtualbox cli app.evb"
     );
     process.exit(1);
 }
