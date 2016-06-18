@@ -2,8 +2,9 @@
 Node-EnigmaVirtualBox
 =====================
 
-[Node](http://nodejs.org/) API and CLI for executing Windows tool [Enigma Virtual Box](http://enigmaprotector.com/en/aboutvb.html)
-to bundle executable with data files.
+[Node](http://nodejs.org/) API and CLI for executing Windows tool
+[Enigma Virtual Box](http://enigmaprotector.com/en/aboutvb.html) to
+bundle executable with data files.
 
 <p/>
 <img src="https://nodei.co/npm/node-enigmavirtualbox.png?downloads=true&stars=true" alt=""/>
