@@ -23,7 +23,7 @@
 */
 
 /* global process: false */
-/* global module: false */
+/* global module:  false */
 /* global require: false */
 
 /*
@@ -32,11 +32,12 @@
 
 var fs   = require("fs");
 var path = require("path");
+var glob = require("glob");
 
 var pathResolve = function (filepath, hasToExist) {
     if (hasToExist && !fs.existsSync(filepath))
         throw new Error("path \"" + filepath + "\" not existing");
-    filepath = ".\\" + path.relative(process.cwd(), filepath);
+    filepath = path.relative(process.cwd(), filepath);
     return filepath;
 };
 
@@ -53,30 +54,78 @@ module.exports = function (args) {
         "        <Enabled>true</Enabled>\n" +
         "        <DeleteExtractedOnExit>true</DeleteExtractedOnExit>\n" +
         "        <CompressFiles>true</CompressFiles>\n" +
-        "        <Files>\n" +
-        "            <File>\n" +
-        "                <Type>3</Type>\n" +
-        "                <Name>%DEFAULT FOLDER%</Name>\n" +
-        "                <Files>\n";
+        "        <Files>\n";
+
+    var tree = {};
     for (var i = 0; i < args.length; i++) {
-        var file = pathResolve(args[i], true);
-        var name = path.basename(file);
-        xml += "" +
-        "                    <File>\n" +
-        "                        <Type>2</Type>\n" +
-        "                        <Name>" + name + "</Name>\n" +
-        "                        <File>" + file + "</File>\n" +
-        "                        <ActiveX>false</ActiveX>\n" +
-        "                        <ActiveXInstall>false</ActiveXInstall>\n" +
-        "                        <Action>0</Action>\n" +
-        "                        <OverwriteDateTime>false</OverwriteDateTime>\n" +
-        "                        <OverwriteAttributes>false</OverwriteAttributes>\n" +
-        "                        <PassCommandLine>false</PassCommandLine>\n" +
-        "                    </File>\n";
+        var arg = args[i];
+        var opts = { leaf: true, extract: false, argument: false };
+        var m = arg.match(/^(.+?)([%@])$/);
+        if (m) {
+            arg       = m[1];
+            var flags = m[2];
+            if (flags.indexOf("%") >= 0)
+                opts.extract = true;
+            if (flags.indexOf("@") >= 0)
+                opts.argument = true;
+        }
+        var files = glob.sync(arg);
+        for (var k = 0; k < files.length; k++) {
+            var file = files[k];
+            file = pathResolve(file, true);
+            if (file === exe_in)
+                continue;
+            if (fs.statSync(file).isDirectory())
+                file += path.sep;
+            var segs = file.split(path.sep);
+            var base = tree;
+            var j;
+            for (j = 0; j < segs.length - 1; j++) {
+                if (base[segs[j]] === undefined)
+                    base[segs[j]] = {};
+                if (typeof base[segs[j]] === "object" && !base[segs[j]].leaf)
+                    base = base[segs[j]];
+                else
+                    throw new Error("conflict between directory and file: " + file);
+            }
+            if (segs[j] !== "")
+                base[segs[j]] = opts;
+        }
     }
+
+    var handlePath = function (prefix, basedir, folder, tree) {
+        var xml = "";
+        xml += prefix + "<File>\n" +
+               prefix + "    <Type>3</Type>\n" +
+               prefix + "    <Name>" + folder + "</Name>\n" +
+               prefix + "    <Files>\n";
+        for (var name in tree) {
+            if (!tree.hasOwnProperty(name))
+                continue;
+            var file = path.join(basedir, name);
+            if (fs.statSync(file).isDirectory())
+                xml += handlePath(prefix + "        ", file, name, tree[name]);
+            else {
+                xml += "        <File>\n" +
+                       "            <Type>2</Type>\n" +
+                       "            <Name>" + name + "</Name>\n" +
+                       "            <File>" + ".\\" + file + "</File>\n" +
+                       "            <ActiveX>false</ActiveX>\n" +
+                       "            <ActiveXInstall>false</ActiveXInstall>\n" +
+                       "            <Action>" + (tree[name].extract ? "1" : "0") + "</Action>\n" +
+                       "            <OverwriteDateTime>false</OverwriteDateTime>\n" +
+                       "            <OverwriteAttributes>false</OverwriteAttributes>\n" +
+                       "            <PassCommandLine>" + (tree[name].argument ? "true": "false") + "</PassCommandLine>\n" +
+                       "        </File>\n";
+            }
+        }
+        xml += prefix + "    </Files>\n";
+        xml += prefix + "</File>\n";
+        return xml;
+    };
+    xml += handlePath("            ", ".", "%DEFAULT FOLDER%", tree);
+
     xml +=
-        "                </Files>\n" +
-        "            </File>\n" +
         "        </Files>\n" +
         "    </Files>\n" +
         "    <Registries>\n" +
