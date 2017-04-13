@@ -49,6 +49,7 @@ var executeProg = function (prog, args, ignoreOutput) {
         try {
             var options = {};
             options.cwd = process.cwd();
+            options.maxbuffer = 10 * 1024 * 1024;
             child_process.execFile(prog, args, { cwd: process.cwd() },
                 function (error, stdout, stderr) {
                     if (error === null && !ignoreOutput && !stdout.match(/(?:.|[\r\n])*\[\d{2}:\d{2}:\d{2}\]/))
