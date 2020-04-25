@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-/*
+/*!
 **  node-enigmavirtualbox -- Node API for executing Enigma Virtual Box
 **  Copyright (c) 2014-2020 Dr. Ralf S. Engelschall <rse@engelschall.com>
 **
